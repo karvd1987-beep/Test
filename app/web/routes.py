@@ -15,7 +15,7 @@ router = APIRouter()
 
 @router.get("/", response_class=HTMLResponse)
 def landing(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse("landing.html", {"request": request, "analysis": None, "error": None})
+    return templates.TemplateResponse(request, "landing.html", {"analysis": None, "error": None})
 
 
 @router.post("/demo/analyze", response_class=HTMLResponse)
@@ -24,18 +24,20 @@ def demo_analyze(request: Request, source_url: str = Form(...), container=Depend
         analysis = container["analysis_service"].analyze_demo_url(source_url)
     except ValueError as exc:
         return templates.TemplateResponse(
+            request,
             "landing.html",
-            {"request": request, "analysis": None, "error": str(exc)},
+            {"analysis": None, "error": str(exc)},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
-    return templates.TemplateResponse("landing.html", {"request": request, "analysis": analysis, "error": None})
+    return templates.TemplateResponse(request, "landing.html", {"analysis": analysis, "error": None})
 
 
 @router.get("/register", response_class=HTMLResponse)
 def register_form(request: Request, source_url: str = "") -> HTMLResponse:
     return templates.TemplateResponse(
+        request,
         "register.html",
-        {"request": request, "source_url": source_url, "error": None},
+        {"source_url": source_url, "error": None},
     )
 
 
@@ -51,8 +53,9 @@ def register_submit(
         user = container["onboarding_service"].register_user_with_trial(email=email, full_name=full_name, source_url=source_url)
     except ValueError as exc:
         return templates.TemplateResponse(
+            request,
             "register.html",
-            {"request": request, "source_url": source_url, "error": str(exc)},
+            {"source_url": source_url, "error": str(exc)},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     return RedirectResponse(url=f"/dashboard/{user.id}", status_code=status.HTTP_303_SEE_OTHER)
@@ -72,9 +75,9 @@ def dashboard(request: Request, user_id: str, container=Depends(get_container)) 
     trial_left_days = max((user.trial_ends_at - datetime.now(timezone.utc)).days, 0)
 
     return templates.TemplateResponse(
+        request,
         "dashboard.html",
         {
-            "request": request,
             "user": user,
             "locations": locations,
             "reviews": reviews[-30:],
@@ -112,7 +115,7 @@ def report(request: Request, user_id: str, container=Depends(get_container)) -> 
     locations = container["locations_repo"].list_for_user(user_id)
     reviews = container["reviews_repo"].list_for_user(locations)
     report_data = container["reporting_service"].build_trial_report(user, reviews)
-    return templates.TemplateResponse("report.html", {"request": request, "user": user, "report": report_data})
+    return templates.TemplateResponse(request, "report.html", {"user": user, "report": report_data})
 
 
 @router.post("/dashboard/{user_id}/subscribe")
