@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Review Radar{% endblock %}</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --fg: #e2e8f0;
+        --muted: #94a3b8;
+        --card: #1e293b;
+        --accent: #22c55e;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+      .card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      h1, h2, h3 {
+        margin-top: 0;
+      }
+      input, button, select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #334155;
+        margin-bottom: 10px;
+      }
+      button {
+        background: var(--accent);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 760px) {
+        .row {
+          grid-template-columns: 1fr;
+        }
+      }
+      a {
+        color: #86efac;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">{% block content %}{% endblock %}</div>
+  </body>
+</html>
