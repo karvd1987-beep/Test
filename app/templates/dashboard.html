@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Личный кабинет | Review Radar{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Личный кабинет</h1>
+  <p><strong>{{ user.full_name }}</strong> ({{ user.email }})</p>
+  <p class="muted">
+    Статус: {{ user.account_status.value }} |
+    Точек: {{ locations|length }} / {{ limit }} |
+    Trial осталось: {{ trial_left_days }} дн.
+  </p>
+  <div class="row">
+    <form method="post" action="/dashboard/{{ user.id }}/monitor">
+      <button type="submit">Запустить мониторинг сейчас</button>
+    </form>
+    <form method="post" action="/dashboard/{{ user.id }}/subscribe">
+      <button type="submit">Оплатить и снять лимиты</button>
+    </form>
+  </div>
+  <a href="/dashboard/{{ user.id }}/trial-report">Посмотреть trial-отчёт</a>
+</div>
+
+<div class="card">
+  <h2>Подключённые точки</h2>
+  {% if locations %}
+  <ul>
+    {% for location in locations %}
+    <li>{{ location.source_url }} ({{ location.source }})</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">Точек пока нет.</p>
+  {% endif %}
+
+  <h3>Добавить точку</h3>
+  <form method="post" action="/dashboard/{{ user.id }}/locations">
+    <input type="url" name="source_url" placeholder="https://yandex.ru/maps/..." required />
+    <button type="submit">Добавить</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Последние отзывы</h2>
+  {% if reviews %}
+  <ul>
+    {% for review in reviews %}
+    <li>
+      <strong>{{ review.severity.value|upper }}</strong> |
+      ★{{ review.rating }} |
+      {{ review.text }}
+      <br />
+      <span class="muted">Рекомендация: {{ review.recommendation }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">Отзывы появятся после первого мониторинга.</p>
+  {% endif %}
+</div>
+{% endblock %}

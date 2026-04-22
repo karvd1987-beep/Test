@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Review Radar — MVP{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Review Radar</h1>
+  <p class="muted">
+    Вставьте ссылку на заведение в Яндекс Картах — получите бесплатный AI-анализ
+    и рекомендации по работе с отзывами.
+  </p>
+  <form method="post" action="/demo/analyze">
+    <label for="source_url">Ссылка на заведение</label>
+    <input id="source_url" type="url" name="source_url" required placeholder="https://yandex.ru/maps/..." />
+    <button type="submit">Сделать демо-анализ</button>
+  </form>
+  {% if error %}
+  <p style="color:#fca5a5">{{ error }}</p>
+  {% endif %}
+</div>
+
+{% if analysis %}
+<div class="card">
+  <h2>Результат демо-анализа</h2>
+  <p>Всего отзывов в срезе: <strong>{{ analysis.total_reviews }}</strong></p>
+  <p>Средний рейтинг: <strong>{{ analysis.average_rating }}</strong></p>
+  <p>Распределение по критичности:</p>
+  <ul>
+    {% for key, value in analysis.severity_breakdown.items() %}
+    <li>{{ key }}: {{ value }}</li>
+    {% endfor %}
+  </ul>
+  <p>Ключевые темы:</p>
+  <ul>
+    {% for issue in analysis.main_topics %}
+    <li>{{ issue }}</li>
+    {% endfor %}
+  </ul>
+  <p>Рекомендации:</p>
+  <ul>
+    {% for rec in analysis.recommendations %}
+    <li>{{ rec }}</li>
+    {% endfor %}
+  </ul>
+  <a href="/register?source_url={{ analysis.source_url }}">Запустить 7-дневный trial</a>
+</div>
+{% endif %}
+{% endblock %}

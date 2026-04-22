@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Регистрация | Review Radar{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Регистрация и старт trial</h1>
+  <p class="muted">
+    Запустите бесплатный мониторинг на 7 дней для вашей точки в Яндекс Картах.
+  </p>
+  <form method="post" action="/register">
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" required />
+    <label for="full_name">Имя</label>
+    <input id="full_name" type="text" name="full_name" required />
+    <label for="source_url">Ссылка на точку</label>
+    <input id="source_url" type="url" name="source_url" value="{{ source_url or '' }}" required />
+    <button type="submit">Создать кабинет и начать trial</button>
+  </form>
+  {% if error %}
+  <p style="color:#fca5a5">{{ error }}</p>
+  {% endif %}
+</div>
+{% endblock %}
