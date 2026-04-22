@@ -46,7 +46,7 @@ def register_submit(
     full_name: str = Form(...),
     source_url: str = Form(...),
     container=Depends(get_container),
-) -> RedirectResponse | HTMLResponse:
+):
     try:
         user = container["onboarding_service"].register_user_with_trial(email=email, full_name=full_name, source_url=source_url)
     except ValueError as exc:
